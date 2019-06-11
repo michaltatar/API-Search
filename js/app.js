@@ -182,7 +182,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     listCities(response.results);
                     getDescription(response.results);
                     if(response.results.length === 0) {
-                        list.html('<h2>Brak wyników</h2>');
+                        list.html('<h2>No results found</h2>');
                     }
 
                 }).fail(function(error) {
