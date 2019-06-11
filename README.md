@@ -4,7 +4,7 @@ A simple app that uses Open AQ (https://docs.openaq.org/) and Wikipedia APIs to 
 
 ## Usage
 
-Copy the files into a single folder and you're ready to go.
+Just download the repo and you're ready to go.
 
 ## Contributing
 
