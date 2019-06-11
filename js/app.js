@@ -23,15 +23,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const autocomplete = document.querySelector('.autocomplete');
     const list = $('.cities_list');
     const submit = $('button[type=submit]');
-
-    //Save input to local storage
     let storedValue = localStorage.getItem('search');
 
     if(storedValue) {
         input.value = storedValue;
     }
 
-    //Create list items with cities names
     const listCities = cities => {
         list.empty();
 
@@ -82,7 +79,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    //Add descriptions from Wikipedia API
     const addDescription = (name, description) => {
         let cityEl = document.querySelectorAll('.city');
         cityEl.forEach(item => {
@@ -93,7 +89,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         })
     };
-    //Note: an additional OR can be used (like name.includes(`${cityName}`)) because city names are not always the same in these APIs
 
     const getDescription = cities => {
 
@@ -112,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     let ids = response.query.pageids;
                     let name = response.query.pages[ids].title;
                     let description = response.query.pages[ids].extract;
-                    //Prevent title change if redirect is present
                     if(redirects) {
                         name = redirects[0].from;
                     }
@@ -127,7 +121,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     };
 
-    //Set value from autocomplete
     autocomplete.addEventListener('click', event => {
         let newValue = event.target.innerText;
         input.value = newValue;
@@ -176,12 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
             let countryCode = countryObj[0].code;
 
             const loadCities = () => {
-                //Note: I had to simplify the query as it took too long to process and Gateway Timeout errors occurred
-                // let date = new Date();
-                // let fullDate = `${date.getUTCFullYear()}-${date.getUTCMonth()+1}-${date.getUTCDate()}`;
-                // let parameter = 'pm25';
                 let url = `https://api.openaq.org/v1/measurements?country=${countryCode}&limit=10&order_by=value&sort=desc`;
-                //Full query: let url = `https://api.openaq.org/v1/measurements?country=${countryCode}&limit=10&parameter=${parameter}&order_by=value&sort=desc&date_from=${fullDate}`;
 
                 $.ajax({
 
