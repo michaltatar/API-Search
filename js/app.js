@@ -45,7 +45,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    //Autocomplete
     input.addEventListener('input', () => {
         let matches = countries.filter(country => {
             const regex = new RegExp(`^${input.value}`, 'gi');
