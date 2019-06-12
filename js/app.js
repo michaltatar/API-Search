@@ -1,3 +1,5 @@
+import { loadCities } from './aq.js';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     const countries = [
@@ -28,22 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     if(storedValue) {
         input.value = storedValue;
     }
-
-    const listCities = cities => {
-        list.empty();
-
-        for(let i=0; i<cities.length; i++) {
-            let city = cities[i].city;
-
-            let newCity = $(`
-                            <li class="city">
-                                <h3 class="city_header">${city} <i class="more fas fa-angle-down"></i></h3>
-                                <div class="city_desc"></div>
-                            </li>
-                            `);
-            list.append(newCity);
-        }
-    };
 
     input.addEventListener('input', () => {
         let matches = countries.filter(country => {
@@ -77,48 +63,6 @@ document.addEventListener('DOMContentLoaded', () => {
            autocomplete.classList.remove('show');
         }
     });
-
-    const addDescription = (name, description) => {
-        let cityEl = document.querySelectorAll('.city');
-        cityEl.forEach(item => {
-            const cityName = item.firstElementChild.innerText;
-            const cityDesc = item.lastElementChild;
-            if(`${cityName}` === name) {
-                cityDesc.innerText = description;
-            }
-        })
-    };
-
-    const getDescription = cities => {
-
-        cities.forEach(city => {
-            let url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&format=json&redirects=1&indexpageids&titles=${city.city}`;
-
-                $.ajax({
-
-                    url: url,
-                    method: 'GET',
-                    dataType: 'jsonp'
-
-                }).done(function(response) {
-
-                    let redirects = response.query.redirects;
-                    let ids = response.query.pageids;
-                    let name = response.query.pages[ids].title;
-                    let description = response.query.pages[ids].extract;
-                    if(redirects) {
-                        name = redirects[0].from;
-                    }
-                    addDescription(name, description);
-
-                }).fail(function(error) {
-
-                    console.log(error);
-
-                })
-        });
-
-    };
 
     autocomplete.addEventListener('click', event => {
         let newValue = event.target.innerText;
@@ -167,34 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let countryCode = countryObj[0].code;
 
-            const loadCities = () => {
-                let url = `https://api.openaq.org/v1/measurements?country=${countryCode}&limit=10&order_by=value&sort=desc`;
-
-                $.ajax({
-
-                    url: url,
-                    method: 'GET',
-                    dataType: 'json'
-
-                }).done(function(response) {
-
-                    listCities(response.results);
-                    getDescription(response.results);
-                    if(response.results.length === 0) {
-                        list.html('<h2>No results found</h2>');
-                    }
-
-                }).fail(function(error) {
-
-                    console.log(error);
-
-                }).always(function() {
-                    submit.attr('disabled', false);
-                    submit.removeClass('loading');
-                })
-            };
-
-            loadCities();
+            loadCities(countryCode, list, submit);
 
             list.off().on('click', '.more', function() {
                 $(this).toggleClass('rotate');
@@ -203,6 +120,6 @@ document.addEventListener('DOMContentLoaded', () => {
             })
         }
 
-    })
+    });
 
 });
